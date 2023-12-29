@@ -18,8 +18,6 @@ app.use(
 );
 
 app.use("/customer/auth/*", function auth(req, res, next) {
-  //Write the authenication mechanism here
-
   if (req.session.authorization) {
     let token = req.session.authorization["validAccessToken"];
 
