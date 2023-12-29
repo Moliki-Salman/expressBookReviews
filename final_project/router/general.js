@@ -18,7 +18,7 @@ public_users.get("/", function (req, res) {
 // Get book details based on ISBN
 public_users.get("/isbn/:isbn", function (req, res) {
   const isbnNo = req.params.isbn;
-  let isbnBook = books[isbnNo];
+  const isbnBook = books[isbnNo];
   if (isbnBook) {
     return res.status(200).json({ isbnBook, message: "Succesful" });
   } else {
@@ -28,13 +28,13 @@ public_users.get("/isbn/:isbn", function (req, res) {
 
 // Get book details based on author
 public_users.get("/author/:author", function (req, res) {
-  let authorRequested = req.params.author;
-  let authorBook = Object.values(books).filter(
+  const authorRequested = req.params.author;
+  const bookAuthor = Object.values(books).filter(
     (book) => book.author === authorRequested
   );
 
-  if (authorBook.length > 0){
-    return res.status(200).json({ authorBook, message: "Sucessful" });
+  if (bookAuthor.length > 0) {
+    return res.status(200).json({ bookAuthor, message: "Sucessful" });
   } else {
     return res.status(404).json({ error: "author not found" });
   }
@@ -42,14 +42,27 @@ public_users.get("/author/:author", function (req, res) {
 
 // Get all books based on title
 public_users.get("/title/:title", function (req, res) {
-  //Write your code here
-  return res.status(300).json({ message: "Yet to be implemented" });
+  const titleRequested = req.params.title;
+  const bookTitle = Object.values(books).filter(
+    (book) => book.title === titleRequested
+  );
+  if (bookTitle.length > 0) {
+    return res.status(200).json({ bookTitle, message: "Successful" });
+  } else {
+    return res.status(404).json({ error: "title not found" });
+  }
 });
 
 //  Get book review
 public_users.get("/review/:isbn", function (req, res) {
-  //Write your code here
-  return res.status(300).json({ message: "Yet to be implemented" });
+  const requestedReview = req.params.isbn;
+  const bookReview = books[requestedReview];
+
+  if (bookReview) {
+    return res.status(200).json({ bookReview, message: "Successful" });
+  } else {
+    return res.status(404).json({ error: "review not found" });
+  }
 });
 
 module.exports.general = public_users;
