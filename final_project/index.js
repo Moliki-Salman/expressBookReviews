@@ -17,6 +17,8 @@ app.use(
   })
 );
 
+
+
 app.use("/customer/auth/*", function auth(req, res, next) {
   //Write the authenication mechanism here
 
