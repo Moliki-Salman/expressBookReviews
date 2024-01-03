@@ -29,7 +29,7 @@ const authenticatedUser = (username, password) => {
 };
 
 //only registered users can login
-regd_users.post("/login", (req, res) => {
+regd_users.post("/login", (req, res) => {//do not add /customer to the route
   const { username, password } = req.body;
   if (!username || !password) {
     return res.status(404).json({ message: "Error logging in" });
@@ -43,7 +43,7 @@ regd_users.post("/login", (req, res) => {
   };
   return res
     .status(200)
-    .json({ username, message: "User logged in sucessfully" });
+    .json({ username, message: `${username} logged in sucessfully ` });
 });
 
 // Add a book review
