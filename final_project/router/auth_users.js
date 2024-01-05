@@ -7,7 +7,7 @@ let users = [];
 
 const isValid = (username) => {
   let matchedUser = users.filter((user) => {
-    user.username === username
+    user.username === username;
   });
   if (matchedUser.length > 0) {
     return true;
@@ -16,11 +16,9 @@ const isValid = (username) => {
   }
 };
 
-
 //only registered users can login
 regd_users.post("/login", (req, res) => {
-  //do not add /customer to the route
-
+  //do not add /customer to the route here; add /cutomer on postman to make it work
   const { username, password } = req.body;
   if (!username || !password) {
     return res.status(404).json({ message: "Error logging in" });
@@ -32,14 +30,19 @@ regd_users.post("/login", (req, res) => {
     accessToken,
     username,
   };
-console.log("Session information during login:", req.session.authorization);
+  console.log("Session information during login:", req.session.authorization);
   return res
     .status(200)
-    .json({ username,accessToken,  message: `${username} logged in sucessfully ` });
+    .json({
+      username,
+      accessToken,
+      message: `${username} logged in sucessfully `,
+    });
 });
 
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
+  //add /cutomer/auth.... on postman to make it work
   const isbn = req.params.isbn;
   const { review } = req.query;
   const username = req.session.authorization.username;
