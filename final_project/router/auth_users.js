@@ -1,6 +1,5 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
-const session = require("express-session");
 let books = require("./booksdb.js");
 const regd_users = express.Router();
 
@@ -8,7 +7,7 @@ let users = [];
 
 const isValid = (username) => {
   let matchedUser = users.filter((user) => {
-    user.username === username;
+    user.username === username
   });
   if (matchedUser.length > 0) {
     return true;
@@ -17,44 +16,56 @@ const isValid = (username) => {
   }
 };
 
-const authenticatedUser = (username, password) => {
-  let authUser = users.filter((user) => {
-    user.username === username && user.password === password;
-  });
-  if (authUser.length > 0) {
-    return true;
-  } else {
-    return false;
-  }
-};
 
 //only registered users can login
-regd_users.post("/login", (req, res) => {//do not add /customer to the route
+regd_users.post("/login", (req, res) => {
+  //do not add /customer to the route
+
   const { username, password } = req.body;
   if (!username || !password) {
     return res.status(404).json({ message: "Error logging in" });
   }
-  let accessToken = jwt.sign({ data: password }, "secretAcess", {
+  let accessToken = jwt.sign({ data: password }, "secretAccess", {
     expiresIn: 60 * 60,
   });
   req.session.authorization = {
     accessToken,
     username,
   };
+console.log("Session information during login:", req.session.authorization);
   return res
     .status(200)
-    .json({ username, message: `${username} logged in sucessfully ` });
+    .json({ username,accessToken,  message: `${username} logged in sucessfully ` });
 });
 
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
-  //Write your code here
-  return res.status(300).json({ message: "Yet to be implemented" });
+  const isbn = req.params.isbn;
+  const { review } = req.query;
+  const username = req.session.authorization.username;
+
+  if (!books[isbn]) {
+    return res.status(404).json({ error: "Book not found", isbn });
+  }
+
+  // Validate review content
+  if (!review || typeof review !== "string") {
+    return res.status(400).json({ error: "Invalid review content" });
+  }
+
+  const existingReview = books[isbn].reviews[username];
+
+  if (existingReview) {
+    // Modify existing review
+    existingReview.review = review;
+  } else {
+    // Add a new review
+    books[isbn].reviews[username] = { review };
+  }
+
+  res.json({ message: "Review posted successfully" });
 });
 
 module.exports.authenticated = regd_users;
 module.exports.isValid = isValid;
 module.exports.users = users;
-
-
-
