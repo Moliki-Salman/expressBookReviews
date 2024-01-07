@@ -10,24 +10,27 @@ public_users.post("/register", (req, res) => {
   if (username && password) {
     if (!isValid(username)) {
       users.push({ username: username, password: password });
-      return res
-        .status(201)
-        .json({
-          username,
-          message: "User registered successfully, Now you can login",
-        });
+      return res.status(201).json({
+        username,
+        message: "User registered successfully, Now you can login",
+      });
     } else {
       return res.status(404).json({ message: "User already exist" });
     }
   }
   return res.status(400).json({ message: "Wrong username or password" });
 });
-;
-
 // Get the book list available in the shop
-public_users.get("/", function  (req, res) {
-  res.send(books);
-  return res.status(200).json({ message: "Successful" });
+public_users.get("/", async function (req, res) {
+  try {
+    const response = await axios.get("GET_URL_TO_FETCH_BOOKS");
+    const books = response.data;
+    res.status(200).json({ books, message: "Successful" });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error getting list books", error: error.message });
+  }
 });
 
 // Get book details based on ISBN
@@ -51,7 +54,10 @@ public_users.get("/author/:author", function (req, res) {
   if (bookAuthor.length > 0) {
     return res
       .status(200)
-      .json({ bookAuthor, message: `Book printed based on ${author} is successful ` });
+      .json({
+        bookAuthor,
+        message: `Book printed based on ${author} is successful `,
+      });
   } else {
     return res.status(404).json({ error: "author not found" });
   }
