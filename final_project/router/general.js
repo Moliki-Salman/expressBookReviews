@@ -79,7 +79,7 @@ public_users.get("/review/:isbn", function (req, res) {
   }
 });
 
-// Task 11 Get book details based on ISBN
+// Task 10 Get book details based on ISBN
 public_users.get("/", async function (req, res) {
   try {
     const response = await axios.get("GET_URL_TO_FETCH_BOOKS"); // Ensure to use the actual API endpoint or the actual URL
@@ -92,17 +92,44 @@ public_users.get("/", async function (req, res) {
   }
 });
 
-//Task 12 Get book details based on ISBN
+//Task 11 Get book details based on ISBN
 public_users.get("/isbn/:isbn", async function (req, res) {
   const isbnNo = req.params.isbn;
   try {
     const response = await axios.get(`GET_URL_TO_FETCH_BOOKS_BY_ISBN/${isbn}`); // Ensure to use the actual API endpoint or the actual URL
     const isbnBook = response.data;
-    res.status(200).json(isbnBook);
+    res
+      .status(200)
+      .json({ isbnBook, message: `Books by ${isbn} found successfully` });
   } catch (error) {
     res
       .status(500)
       .json({ message: "Error getting books by isbn", error: error.message });
+  }
+});
+
+// TASK 12 Get book details based on author
+public_users.get("/author/:author", async function (req, res) {
+  const author = req.params.author;
+  try {
+    const response = await axios.get(
+      `GET_URL_TO_FETCH_BOOKS_BY_ISBN/${author}`
+    );
+    const bookAuthor = response.data;
+
+    if (bookAuthor.length > 0) {
+      return res.status(200).json({
+        bookAuthor,
+        message: `Books by ${author} found successfully`,
+      });
+    } else {
+      return res.status(404).json({ error: "Author not found" });
+    }
+  } catch (error) {
+    console.error("Error:", error); //helps to log error message
+    return res
+      .status(500)
+      .json({ message: "Error getting books by author", error: error.message });
   }
 });
 
