@@ -3,6 +3,7 @@ let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
+const axios = require("axios");
 
 public_users.post("/register", (req, res) => {
   const { username, password } = req.body;
@@ -24,7 +25,7 @@ public_users.post("/register", (req, res) => {
 ;
 
 // Get the book list available in the shop
-public_users.get("/", function (req, res) {
+public_users.get("/", function  (req, res) {
   res.send(books);
   return res.status(200).json({ message: "Successful" });
 });
@@ -42,13 +43,15 @@ public_users.get("/isbn/:isbn", function (req, res) {
 
 // Get book details based on author
 public_users.get("/author/:author", function (req, res) {
-  const authorRequested = req.params.author;
+  const author = req.params.author;
   const bookAuthor = Object.values(books).filter(
-    (book) => book.author === authorRequested
+    (book) => book.author === author
   );
 
   if (bookAuthor.length > 0) {
-    return res.status(200).json({ bookAuthor, message: "Sucessful" });
+    return res
+      .status(200)
+      .json({ bookAuthor, message: `Book printed based on ${author} is successful ` });
   } else {
     return res.status(404).json({ error: "author not found" });
   }
