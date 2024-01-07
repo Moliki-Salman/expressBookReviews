@@ -66,7 +66,7 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
 
 regd_users.delete("/auth/review/:isbn", (req, res) => {
   const isbn = req.params.isbn;
-  const { review } = req.query
+  const { review } = req.query;
   const username = req.session.authorization.username;
 
   if (!books[isbn]) {
@@ -85,4 +85,3 @@ regd_users.delete("/auth/review/:isbn", (req, res) => {
 module.exports.authenticated = regd_users;
 module.exports.isValid = isValid;
 module.exports.users = users;
-

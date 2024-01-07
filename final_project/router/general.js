@@ -133,4 +133,27 @@ public_users.get("/author/:author", async function (req, res) {
   }
 });
 
+// TASK 13 Get book details based on titile
+public_users.get("/title/:title", async function (req, res) {
+  const title = req.params.title;
+  try {
+    const response = await axios.get(`GET_URL_TO_FETCH_BOOKS_BY_ISBN/${title}`);
+    const bookTitle = response.data;
+
+    if (bookTitle.length > 0) {
+      return res.status(200).json({
+        bookTitle,
+        message: `Books by ${title} found successfully`,
+      });
+    } else {
+      return res.status(404).json({ error: "Book tittle not found" });
+    }
+  } catch (error) {
+    console.error("Error:", error); //helps to log error message
+    return res
+      .status(500)
+      .json({ message: "Error getting books by tittle", error: error.message });
+  }
+});
+
 module.exports.general = public_users;
