@@ -52,12 +52,10 @@ public_users.get("/author/:author", function (req, res) {
   );
 
   if (bookAuthor.length > 0) {
-    return res
-      .status(200)
-      .json({
-        bookAuthor,
-        message: `Book printed based on ${author} is successful `,
-      });
+    return res.status(200).json({
+      bookAuthor,
+      message: `Book printed based on ${author} is successful `,
+    });
   } else {
     return res.status(404).json({ error: "author not found" });
   }
